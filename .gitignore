@@ -8,3 +8,11 @@ wheels/
 
 # Virtual environments
 .venv
+.env
+
+aws_dbt_snowflake_project/target/
+aws_dbt_snowflake_project/dbt_packages/
+aws_dbt_snowflake_project/logs/
+aws_dbt_snowflake_project/profiles.yml
+
+uv.lock
