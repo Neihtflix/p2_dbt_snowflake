@@ -18,11 +18,11 @@ The project is fed with data from an AWS S3 Bucket. Data will be handled in Stag
 
 1. Metadata-Driven Join Engine
 
-Unlike traditional static SQL, this project uses a Dynamic SQL Generator. By defining table relationships in dbt_project.yml, the obt.sql model automatically generates complex joins. This allows the warehouse to scale without writing a single new line of SQL code.
+    Unlike traditional static SQL, this project uses a Dynamic SQL Generator. By defining table relationships in dbt_project.yml, the obt.sql model automatically generates complex joins. This allows the warehouse to scale without writing a single new line of SQL code.
 
 2. Scalable Ingestion
 
-Utilizes Snowflake External Stages and COPY INTO commands to pull data directly from cloud storage, ensuring the pipeline can handle massive datasets.
+    Utilizes Snowflake External Stages and COPY INTO commands to pull data directly from cloud storage, ensuring the pipeline can handle massive datasets.
 
 3. Data Integrity & Testing
 
@@ -35,20 +35,25 @@ Utilizes Snowflake External Stages and COPY INTO commands to pull data directly 
 
 1. Prerequisites
 
--A Snowflake account.
--dbt-core installed locally (pip install dbt-snowflake).
--Raw data files uploaded to an S3 bucket.
+    A Snowflake account.
+    
+    dbt-core installed locally (pip install dbt-snowflake).
+    
+    Raw data files uploaded to an S3 bucket.
 
 2. Snowflake Setup
 
 Before running dbt, execute the initialization scripts located in the scripts/ folder:
-    - scripts/snowflake_setup.sql: Creates databases, warehouses, and schemas.
-    - scripts/ddl_load_bronze.sql: Sets up the S3 Stage and loads raw CSVs into the Bronze layer.
+    
+    scripts/snowflake_setup.sql: Creates databases, warehouses, and schemas.
+    
+    scripts/ddl_load_bronze.sql: Sets up the S3 Stage and loads raw CSVs into the Bronze layer.
 
 3. Security Configuration
 
-Move profiles.yml to your local ~/.dbt/ (Mac/Linux) or C:\Users\Name\.dbt\ (Windows) directory.
-The profiles.yml is explicitly ignored by .gitignore.
+    Move profiles.yml to your local ~/.dbt/ (Mac/Linux) or C:\Users\Name\.dbt\ (Windows) directory.
+
+    The profiles.yml is explicitly ignored by .gitignore.
 
 
 ## 📂 Project Structure
