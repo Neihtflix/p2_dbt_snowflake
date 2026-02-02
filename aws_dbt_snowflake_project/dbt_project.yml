@@ -1,0 +1,77 @@
+
+# Name your project! Project names should contain only lowercase characters
+# and underscores. A good package name should reflect your organization's
+# name or the intended use of these models
+name: 'aws_dbt_snowflake_project'
+version: '1.0.0'
+
+# This setting configures which "profile" dbt uses for this project.
+profile: 'aws_dbt_snowflake_project'
+
+# These configurations specify where dbt should look for different types of files.
+# The `model-paths` config, for example, states that models in this project can be
+# found in the "models/" directory. You probably won't need to change these!
+model-paths: ["models"]
+analysis-paths: ["analyses"]
+test-paths: ["tests"]
+seed-paths: ["seeds"]
+macro-paths: ["macros"]
+snapshot-paths: ["snapshots"]
+
+clean-targets:         # directories to be removed by `dbt clean`
+  - "target"
+  - "dbt_packages"
+
+
+# Configuring models
+# Full documentation: https://docs.getdbt.com/docs/configuring-models
+
+# In this example config, we tell dbt to build all models in the example/
+# directory as views. These settings can be overridden in the individual model
+# files using the `{{ config(...) }}` macro.
+models:
+  aws_dbt_snowflake_project:
+    # Config indicated by + and applies to all files under models/example/
+    bronze:
+      +schema: bronze
+      +materialized: table
+    silver:
+      +schema: silver
+      +materialized: table
+    gold:
+      +schema: gold
+      +materialized: table
+      ephemeral:
+        +materialized: ephemeral
+
+# Custom variables for metadata configuration
+vars:
+  gold_obt:
+    - table: "silver_bookings"
+      alias: "silver_bookings"
+      columns: "silver_bookings.*"
+    
+    - table: "silver_listings"
+      alias: "silver_listings"
+      columns: "silver_listings.HOST_ID, silver_listings.PROPERTY_TYPE, silver_listings.ROOM_TYPE, silver_listings.CITY, silver_listings.COUNTRY, silver_listings.ACCOMMODATES, silver_listings.BEDROOMS, silver_listings.BATHROOMS, silver_listings.PRICE_PER_NIGHT, silver_listings.PRICE_TAG, silver_listings.CREATED_AT AS LISTING_CREATED_AT"
+      join_condition: "silver_bookings.LISTING_ID = silver_listings.LISTING_ID"
+
+    - table: "silver_hosts"
+      alias: "silver_hosts"
+      columns: "silver_hosts.HOST_NAME, silver_hosts.HOST_SINCE, silver_hosts.IS_SUPERHOST, silver_hosts.RESPONSE_RATE, silver_hosts.RESPONSE_RATE_QUALITY, silver_hosts.CREATED_AT AS HOST_CREATED_AT"
+      join_condition: "silver_listings.HOST_ID = silver_hosts.HOST_ID"
+
+  gold_fact:
+    - table: "obt"
+      alias: "gold_obt"
+      columns: "gold_obt.BOOKING_ID,gold_obt.LISTING_ID,gold_obt.HOST_ID,gold_obt.BOOKING_AMOUNT,gold_obt.SERVICE_FEE,gold_obt.CLEANING_FEE,gold_obt.ACCOMMODATES,gold_obt.BEDROOMS,gold_obt.BATHROOMS,gold_obt.PRICE_PER_NIGHT,gold_obt.RESPONSE_RATE"
+
+    - table: "dim_listings"
+      alias: "dim_listings"
+      columns: ""
+      join_condition: "gold_obt.LISTING_ID = dim_listings.LISTING_ID"
+
+    - table: "dim_hosts"
+      alias: "dim_hosts"
+      columns: ""
+      join_condition: "gold_obt.HOST_ID = dim_hosts.HOST_ID"
